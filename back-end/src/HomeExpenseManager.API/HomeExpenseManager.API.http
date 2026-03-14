@@ -1,0 +1,6 @@
+@HomeExpenseManager.API_HostAddress = http://localhost:5208
+
+GET {{HomeExpenseManager.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
