@@ -12,7 +12,7 @@ public abstract class BaseEntityMapping<T> : IEntityTypeConfiguration<T>
         builder.HasKey(e => e.Id);
 
         builder.Property(u => u.CreatedAt)
-       .HasDefaultValueSql("GETDATE()");
+       .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.Property(e => e.UpdatedAt)
             .IsRequired();

@@ -5,10 +5,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HomeExpenseManager.Infrastructure\HomeExpenseManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeExpenseManager.Application\HomeExpenseManager.Application.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

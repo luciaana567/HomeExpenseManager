@@ -1,14 +1,25 @@
 using HomeExpenseManager.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using HomeExpenseManager.Application.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
 
 // registrar DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//AutoMapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+// registrar serviços e repositórios **antes do Build**
+builder.Services.AddApplicationServices();
+
+// registrar AutoMapper
+builder.Services.AddMappingProfiles();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -16,8 +27,6 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-
     try
     {
         db.Database.Migrate();
@@ -28,11 +37,16 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-
 // Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeExpenseManager API V1");
+        c.RoutePrefix = string.Empty;
+    });
+}
 
 app.UseHttpsRedirection();
 
