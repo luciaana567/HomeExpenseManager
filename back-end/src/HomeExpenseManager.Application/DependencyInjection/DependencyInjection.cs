@@ -12,7 +12,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        // Services
+        services.AddScoped<IUserService, UserService>();
 
+        // Repositories
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
