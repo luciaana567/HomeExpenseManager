@@ -104,7 +104,7 @@ namespace HomeExpenseManager.Application.Services
             var usersDto = users.Select(user => _mapper.Map<UserDto>(user)).ToList();
 
             return usersDto;
-        }
-       
+        }      
+
     }
 }

@@ -7,41 +7,26 @@ using System.Threading.Tasks;
 
 namespace HomeExpenseManager.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : RepositoryBase<User>, IUserRepository
     {
         private readonly AppDbContext _db;
 
-        public UserRepository(AppDbContext db)
+        public UserRepository(AppDbContext db): base(db)
         {
             _db = db;
         }
 
+
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            return await _db.Users.FindAsync(id);
+            return await _db.Users.Include(x => x.Person).Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _db.Users.ToListAsync();
-        }
-
-        public async Task AddAsync(User user)
-        {
-            await _db.Users.AddAsync(user);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(User user)
-        {
-            _db.Users.Update(user);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(User user)
-        {
-            _db.Users.Remove(user);
-            await _db.SaveChangesAsync();
+            return await _db.Users
+                        .Include(x => x.Person)
+                        .ToListAsync();
         }
 
         public async Task<Boolean> CheckExistsEmail(string email)

@@ -17,5 +17,7 @@ namespace HomeExpenseManager.Domain.Entities
         public String? UserName { get; set; }
 
         public UserRole Role { get; set; } = UserRole.User;
+
+        public Person Person { get; set; }
     }
 }
