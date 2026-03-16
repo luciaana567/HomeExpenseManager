@@ -9,6 +9,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        #region user
         CreateMap<User, UserDto>()
            .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.Person))
            .ReverseMap();
@@ -18,12 +19,24 @@ public class MappingProfile : Profile
 
         CreateMap<UpdateUserDto, User>();
 
+        #endregion
+
+        #region person
         CreateMap<PersonDto, Person>()
             .ReverseMap()
-            .ForMember(dest => dest.Age, opt => opt.Ignore());
-            
+            .ForMember(dest => dest.Age, opt => opt.Ignore());            
 
         CreateMap<CreatePersonDto, Person>();
+
+        #endregion
+
+        #region Category
+
+        CreateMap<CategoryDto, Category>().ReverseMap();
+
+        CreateMap<CreateCategoryDto, Category>();
+
+        #endregion
 
     }
 }

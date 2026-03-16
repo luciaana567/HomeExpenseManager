@@ -29,7 +29,8 @@ obj/
 *.ldf
 *.sqlite
 *.db
-
+*.db-shm
+*.db-wal
 # Entity Framework
 
 Migrations/*.Designer.cs

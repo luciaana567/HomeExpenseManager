@@ -15,10 +15,12 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<ICategoryService, CategoryService>();
 
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPersonRepository, PersonRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         return services;
     }
