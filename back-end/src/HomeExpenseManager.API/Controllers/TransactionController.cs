@@ -47,7 +47,7 @@ public class TransactionsController : ControllerBase
     public async Task<ActionResult<TransactionDto>> GetAll()
     {
         var Transactions = await _service.GetAllAsync();
-        if ( Transactions.IsNullOrEmpty())
+        if (Transactions.IsNullOrEmpty())
             return NotFound();
 
         return Ok(Transactions);
