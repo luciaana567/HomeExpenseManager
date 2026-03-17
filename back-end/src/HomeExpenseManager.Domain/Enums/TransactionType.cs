@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace HomeExpenseManager.Domain.Enums
 {
-    public enum Purpose
+    public enum TransactionType
     {
         Expense = 1,
-        Revenue = 2,
-        Both = 3,
+        Income = 2
     }
 }

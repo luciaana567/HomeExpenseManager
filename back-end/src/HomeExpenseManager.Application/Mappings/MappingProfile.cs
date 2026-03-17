@@ -38,5 +38,22 @@ public class MappingProfile : Profile
 
         #endregion
 
+        #region Transaction
+
+        CreateMap<TransactionDto, Transaction>()
+            .ForMember(dest => dest.Person, opt => opt.Ignore())
+            .ForMember(dest => dest.Category, opt => opt.Ignore())
+            .ReverseMap();
+
+        CreateMap<CreateTransactionDto, Transaction>()
+            .ForMember(dest => dest.Person, opt => opt.Ignore())
+            .ForMember(dest => dest.Category, opt => opt.Ignore());
+
+        CreateMap<UpdateTransactionDto, Transaction>()
+            .ForMember(dest => dest.Person, opt => opt.Ignore())
+            .ForMember(dest => dest.PersonId, opt => opt.Ignore())
+            .ForMember(dest => dest.Category, opt => opt.Ignore());
+
+        #endregion
     }
 }
