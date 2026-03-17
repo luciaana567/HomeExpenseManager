@@ -9,17 +9,22 @@ using HomeExpenseManager.Domain.Interfaces.Repositories;
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+using HomeExpenseManager.Application.DTOs.Person;
+using HomeExpenseManager.Domain.Enums;
+using HomeExpenseManager.Infrastructure.Repositories;
 
 namespace HomeExpenseManager.Application.Services
 {
     public class PersonService : IPersonService
     {
         private readonly IPersonRepository _repository;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
 
-        public PersonService(IPersonRepository repository, IMapper mapper)
+        public PersonService(IPersonRepository repository, ITransactionRepository transactionRepository, IMapper mapper)
         {
             _repository = repository;
+            _transactionRepository = transactionRepository;
             _mapper = mapper;
         }
 
@@ -60,6 +65,41 @@ namespace HomeExpenseManager.Application.Services
 
             return personsDto;
         }
-       
+
+        public async Task<PersonsSummaryDto> GetPersonsTotals()
+        {
+            var persons = await _repository.GetAllAsync();
+            var transactions = await _transactionRepository.GetAllAsync();
+
+            var personsTotals = persons.Select(person =>
+            {
+                var personTransactions = transactions
+                    .Where(t => t.PersonId == person.Id);
+
+                var totalIncome = personTransactions
+                    .Where(t => t.Type == TransactionType.Income)
+                    .Sum(t => t.Value);
+
+                var totalExpense = personTransactions
+                    .Where(t => t.Type == TransactionType.Expense)
+                    .Sum(t => t.Value);
+
+                return new PersonTotalsDto
+                {
+                    PersonId = person.Id,
+                    Name = person.Name,
+                    TotalIncome = totalIncome,
+                    TotalExpense = totalExpense
+                };
+            }).ToList();
+
+            return new PersonsSummaryDto
+            {
+                Persons = personsTotals,
+                TotalIncome = personsTotals.Sum(p => p.TotalIncome),
+                TotalExpense = personsTotals.Sum(p => p.TotalExpense)
+            };
+        }
+
     }
 }
