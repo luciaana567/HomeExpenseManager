@@ -6,7 +6,7 @@ using HomeExpenseManager.Application.DTOs;
 
 namespace HomeExpenseManager.Application.Interfaces
 {
-    public interface ICategoryService
+    public interface ITransactionService
     {
         Task<CategoryDto?> GetByIdAsync(Guid id);
         Task<CategoryDto> CreateAsync(CreateCategoryDto dto);
