@@ -12,5 +12,7 @@ namespace HomeExpenseManager.Domain.Entities
     {
         public string Description {  get; set; }
         public Purpose Purpose { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

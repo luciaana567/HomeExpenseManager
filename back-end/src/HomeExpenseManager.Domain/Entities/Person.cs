@@ -12,6 +12,8 @@ namespace HomeExpenseManager.Domain.Entities
         public string Name {  get; set; }
         public DateTime Birthday { get; set; }
         public Guid UserId { get; set; }
+
         public User User { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

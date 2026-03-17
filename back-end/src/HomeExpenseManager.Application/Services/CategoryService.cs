@@ -50,7 +50,7 @@ namespace HomeExpenseManager.Application.Services
                 return null;
 
             category.Description = dto.Description.IsNullOrEmpty() ? category.Description : dto.Description;
-            category.Purpose = dto.Purpose >= 0  ? category.Purpose : dto.Purpose;
+            category.Purpose = dto.Purpose >= 0  ? dto.Purpose : category.Purpose;
 
             await _repository.UpdateAsync(category);
 
