@@ -55,7 +55,7 @@ public class TransactionsController : ControllerBase
 
     // UPDATE
     [HttpPut("{id}")]
-    public async Task<ActionResult<TransactionDto>> Update(Guid id, TransactionDto dto)
+    public async Task<ActionResult<TransactionDto>> Update(Guid id, UpdateTransactionDto dto)
     {
         try
         {

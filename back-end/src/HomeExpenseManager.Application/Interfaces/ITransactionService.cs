@@ -8,10 +8,10 @@ namespace HomeExpenseManager.Application.Interfaces
 {
     public interface ITransactionService
     {
-        Task<CategoryDto?> GetByIdAsync(Guid id);
-        Task<CategoryDto> CreateAsync(CreateCategoryDto dto);
-        Task<CategoryDto?> UpdateAsync(Guid id, CategoryDto dto);
+        Task<TransactionDto?> GetByIdAsync(Guid id);
+        Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
+        Task<TransactionDto?> UpdateAsync(Guid id, UpdateTransactionDto dto);
         Task<bool> DeleteAsync(Guid id);
-        Task<IList<CategoryDto>> GetAllAsync();
+        Task<IList<TransactionDto>> GetAllAsync();
     }
 }
