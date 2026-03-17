@@ -81,4 +81,20 @@ public class CategoriesController : ControllerBase
 
         return NoContent();
     }
+
+    // Consulta de totais por categoria
+    [HttpPut("GetCategoriesTotals")]
+    public async Task<ActionResult<PersonDto>> GetCategoriesTotals()
+    {
+        try
+        {
+            var categories = await _service.GetCategoriesTotals();
+
+            return Ok(categories);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }
