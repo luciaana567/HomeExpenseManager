@@ -1,5 +1,6 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
+using HomeExpenseManager.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -55,4 +56,21 @@ public class PersonController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    // Consulta de totais por pessoa
+    [HttpPut("GetPersonsTotals")]
+    public async Task<ActionResult<PersonDto>> GetPersonsTotals()
+    {
+        try
+        {
+            var persons = await _service.GetPersonsTotals();
+
+            return Ok(persons);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
 }
