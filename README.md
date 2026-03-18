@@ -1,122 +1,190 @@
-# HomeExpenseManager
+# 💰 HomeExpenseManager
 
-Sistema de controle de gastos residenciais.
-
-# back-end
-
-API para gerenciamento de gastos residenciais, permitindo o controle de usuários, pessoas, categorias e transações financeiras.
-
-O projeto foi desenvolvido com foco em boas práticas de organização em camadas, autenticação com JWT, validação de dados, documentação com Swagger e tratamento global de exceções.
+Sistema de controle de gastos residenciais desenvolvido com foco em boas
+práticas de arquitetura, segurança e organização de código.
 
 ---
 
-## Tecnologias utilizadas
+## 📌 Sobre o projeto
 
-- .NET 9
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQLite
-- JWT Authentication
-- Swagger / OpenAPI
-- FluentValidation
+O **HomeExpenseManager** é uma API RESTful para gerenciamento financeiro
+pessoal/residencial, permitindo o controle de:
+
+- usuários\
+- pessoas\
+- categorias\
+- transações financeiras
+
+O projeto foi desenvolvido com foco em:
+
+- arquitetura em camadas\
+- autenticação com JWT\
+- validação de dados\
+- padronização de respostas\
+- tratamento global de exceções\
+- documentação com Swagger
+
+---
+
+## 🚀 Tecnologias utilizadas
+
+- .NET 9\
+- ASP.NET Core Web API\
+- Entity Framework Core\
+- SQLite\
+- JWT (JSON Web Token)\
+- Swagger / OpenAPI\
+- FluentValidation\
 - AutoMapper
 
 ---
 
-## Arquitetura do projeto
+## 🧱 Arquitetura
 
-O projeto está organizado em camadas para separar responsabilidades e facilitar manutenção, evolução e testes.
+O projeto segue uma arquitetura em camadas para garantir separação de
+responsabilidades, escalabilidade e manutenção facilitada.
 
-### Estrutura
+### 📂 Estrutura
 
-- **HomeExpenseManager.API**
-  - Controllers
-  - Middlewares
-  - Extensions
+- **API**
+  - Controllers\
+  - Middlewares\
+  - Extensions\
   - Configuração da aplicação
-
-- **HomeExpenseManager.Application**
-  - DTOs
-  - Services
-  - Interfaces
-  - Validators
-  - Dependency Injection
-  - Profiles do AutoMapper
-
-- **HomeExpenseManager.Domain**
-  - Entidades
-  - Enums
+- **Application**
+  - DTOs\
+  - Services\
+  - Interfaces\
+  - Validators (FluentValidation)\
+  - Dependency Injection\
+  - AutoMapper Profiles
+- **Domain**
+  - Entidades\
+  - Enums\
   - Interfaces de repositório
-
-- **HomeExpenseManager.Infrastructure**
-  - DbContext
-  - Repositórios
+- **Infrastructure**
+  - DbContext\
+  - Repositórios\
   - Persistência de dados
 
 ---
 
-## Funcionalidades atuais
+## ⚙️ Funcionalidades
 
-- Cadastro de usuários
-- Autenticação com JWT
-- Cadastro e consulta de pessoas
-- Cadastro e consulta de categorias
-- Cadastro, edição, exclusão e busca de transações
+- Cadastro de usuários\
+- Autenticação com JWT\
+- CRUD de pessoas\
+- CRUD de categorias\
+- CRUD de transações\
 - Filtros de transações por:
-  - período
-  - tipo
-  - categoria
-  - pessoa
-- Paginação de transações
-- Totais por pessoa
-- Totais por categoria
-- Validação com FluentValidation
-- Middleware global para tratamento de exceções
-- Documentação da API com Swagger
+  - período\
+  - tipo\
+  - categoria\
+  - pessoa\
+- Paginação de resultados\
+- Totalizadores por pessoa\
+- Totalizadores por categoria\
+- Validação com FluentValidation\
+- Middleware global de tratamento de erros\
+- Documentação com Swagger\
 - Proteção de endpoints com Bearer Token
 
 ---
 
-## Padrões e melhorias aplicadas
+## 🧠 Boas práticas aplicadas
 
-- Separação em camadas
-- Configuração modular com extension methods
-- JWT configurado via `appsettings.json`
-- Swagger com suporte a autenticação Bearer
-- Middleware global para erros não tratados
-- Validação centralizada com FluentValidation
+- Separação em camadas (Clean Architecture-like)\
+- Configuração modular com extension methods\
+- JWT configurado via `appsettings.json`\
+- Middleware global de exceções\
+- Validação centralizada com FluentValidation\
+- Respostas padronizadas com Result / PagedResult\
 - CORS preparado para integração com front-end
 
 ---
 
-## Como rodar o projeto
+## ▶️ Como rodar o projeto
 
-### Pré-requisitos
+### 📋 Pré-requisitos
 
-Antes de começar, você precisa ter instalado:
-
-- [.NET SDK 9.0](https://dotnet.microsoft.com/download)
+- .NET SDK 9.0\
 - Git
 
 ---
 
-## 1. Clonar o repositório
+### 1. Clonar o repositório
 
-## 2. Restaurar os pacotes
+git clone https://github.com/luciaana567/HomeExpenseManager.git\
+cd HomeExpenseManager
 
--dotnet restore
+---
 
-## 3. Rodar o projeto
+### 2. Restaurar dependências
 
--dotnet run --project back-end/src/HomeExpenseManager.API
+dotnet restore
 
-## 4. Swagguer
+---
 
-Quando a aplicação subir, o Swagger ficará disponível na raiz da aplicação.
+### 3. Executar a API
+
+dotnet run --project back-end/src/HomeExpenseManager.API
+
+---
+
+### 🗄️ Banco de dados
+
+A aplicação já está configurada para aplicar as migrations
+automaticamente ao iniciar.
+
+Ou seja, o banco será criado/atualizado automaticamente ao rodar a API.
+
+---
+
+### 📖 Swagger
+
+Após iniciar a aplicação, acesse:
+
+http://localhost:xxxx/
+
 A porta pode variar conforme o ambiente.
 
 ---
 
-Autor
+## 🔐 Autenticação
 
-Desenvolvido por Luciana Silva Araújo Costa.
+Para acessar endpoints protegidos:
+
+1.  Faça login\
+2.  Copie o token JWT retornado\
+3.  Clique em **Authorize** no Swagger\
+4.  Informe:
+
+Bearer SEU_TOKEN
+
+---
+
+## 🌐 CORS
+
+A API está configurada para permitir integração com front-end local:
+
+- http://localhost:5173\
+- http://localhost:3000
+
+---
+
+## 📌 Próximas melhorias
+
+- Testes unitários\
+- Testes de integração\
+- Pipeline CI/CD\
+- Dockerização\
+- Versionamento de API\
+- Refresh Token
+
+---
+
+## 👩‍💻 Autor
+
+Desenvolvido por **Luciana Silva Araújo Costa**
+
+GitHub: https://github.com/luciaana567
