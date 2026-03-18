@@ -78,3 +78,28 @@ coverage/
 
 *.tmp
 *.temp
+
+# =========================
+# FRONT-END (React / Vite)
+# =========================
+front-end/node_modules/
+front-end/dist/
+front-end/.vite/
+front-end/coverage/
+
+# arquivos de ambiente
+front-end/.env
+front-end/.env.*
+!front-end/.env.example
+
+# logs
+front-end/npm-debug.log*
+front-end/yarn-debug.log*
+front-end/yarn-error.log*
+front-end/pnpm-debug.log*
+
+# sistema/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
