@@ -1,25 +1,90 @@
-using HomeExpenseManager.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using HomeExpenseManager.Infrastructure.Data;
 using HomeExpenseManager.Application.DependencyInjection;
+using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add Controllers
 builder.Services.AddControllers();
 
-// registrar DbContext
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "HomeExpenseManager API",
+        Version = "v1"
+    });
+
+    // configuração do JWT no Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Digite o token JWT assim: Bearer {seu token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// registrar serviços e repositórios **antes do Build**
+// Services e Repositories
 builder.Services.AddApplicationServices();
 
 // registrar AutoMapper
 builder.Services.AddMappingProfiles();
 
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//  CONFIGURATION
+var key = Encoding.ASCII.GetBytes("Jpp7rkDfvyQh3kmbUxiLBq4OkDV5VsxO0oKUMAQ9u1x");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+
+        ValidateIssuer = false,
+        ValidateAudience = false,
+
+        ValidateLifetime = true
+    };
+});
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -37,7 +102,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
+
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -50,6 +116,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

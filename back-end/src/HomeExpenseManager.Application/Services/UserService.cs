@@ -40,7 +40,7 @@ namespace HomeExpenseManager.Application.Services
             var user = _mapper.Map<User>(dto);
 
 
-            if (dto.Password.IsNullOrEmpty() || dto.Email.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(dto.Password) || string.IsNullOrEmpty(dto.Email))
                 throw new Exception("invalid user");
 
             var checkEmail = await _repository.CheckExistsEmail(dto.Email);

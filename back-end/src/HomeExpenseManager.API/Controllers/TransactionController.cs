@@ -1,5 +1,6 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,6 +18,7 @@ public class TransactionsController : ControllerBase
     }
 
     // CREATE 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<TransactionDto>> Create(CreateTransactionDto dto)
     {
@@ -32,6 +34,7 @@ public class TransactionsController : ControllerBase
     }
 
     // GET BY ID
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<TransactionDto>> GetById(Guid id)
     {
@@ -43,17 +46,19 @@ public class TransactionsController : ControllerBase
     }
 
     //GET ALL
+    [Authorize]
     [HttpGet("GetAll")]
     public async Task<ActionResult<TransactionDto>> GetAll()
     {
         var Transactions = await _service.GetAllAsync();
-        if (Transactions.IsNullOrEmpty())
+        if (Transactions.Count == 0)
             return NotFound();
 
         return Ok(Transactions);
     }
 
     // UPDATE
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult<TransactionDto>> Update(Guid id, UpdateTransactionDto dto)
     {
@@ -72,6 +77,7 @@ public class TransactionsController : ControllerBase
     }
 
     // DELETE
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

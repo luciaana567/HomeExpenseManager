@@ -1,5 +1,6 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,6 +18,7 @@ public class UsersController : ControllerBase
     }
 
     // CREATE - cria usuário
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
     {
@@ -31,7 +33,9 @@ public class UsersController : ControllerBase
         }
     }
 
+
     // GET BY ID
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDto>> GetById(Guid id)
     {
@@ -43,17 +47,19 @@ public class UsersController : ControllerBase
     }
 
     //GET ALL
+    [Authorize]
     [HttpGet("GetAll")]
     public async Task<ActionResult<UserDto>> GetAll()
     {
         var users = await _service.GetAllAsync();
-        if ( users.IsNullOrEmpty())
+        if ( users.Count == 0)
             return NotFound();
 
         return Ok(users);
     }
 
     // UPDATE
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult<UserDto>> Update(Guid id, UpdateUserDto dto)
     {
@@ -72,6 +78,7 @@ public class UsersController : ControllerBase
     }
 
     // DELETE
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

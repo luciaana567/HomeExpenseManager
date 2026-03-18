@@ -33,5 +33,11 @@ namespace HomeExpenseManager.Infrastructure.Repositories
         {
             return await _db.Users.AnyAsync(u => u.Email == email);
         }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == email);
+        }
     }
 }

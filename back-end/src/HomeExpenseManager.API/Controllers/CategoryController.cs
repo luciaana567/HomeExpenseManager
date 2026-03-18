@@ -1,5 +1,6 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,6 +18,7 @@ public class CategoriesController : ControllerBase
     }
 
     // CREATE 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> Create(CreateCategoryDto dto)
     {
@@ -32,6 +34,7 @@ public class CategoriesController : ControllerBase
     }
 
     // GET BY ID
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<CategoryDto>> GetById(Guid id)
     {
@@ -43,17 +46,19 @@ public class CategoriesController : ControllerBase
     }
 
     //GET ALL
+    [Authorize]
     [HttpGet("GetAll")]
     public async Task<ActionResult<CategoryDto>> GetAll()
     {
         var categorys = await _service.GetAllAsync();
-        if ( categorys.IsNullOrEmpty())
+        if ( categorys.Count == 0)
             return NotFound();
 
         return Ok(categorys);
     }
 
     // UPDATE
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult<CategoryDto>> Update(Guid id, CategoryDto dto)
     {
@@ -72,6 +77,7 @@ public class CategoriesController : ControllerBase
     }
 
     // DELETE
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
@@ -83,6 +89,7 @@ public class CategoriesController : ControllerBase
     }
 
     // Consulta de totais por categoria
+    [Authorize]
     [HttpPut("GetCategoriesTotals")]
     public async Task<ActionResult<PersonDto>> GetCategoriesTotals()
     {

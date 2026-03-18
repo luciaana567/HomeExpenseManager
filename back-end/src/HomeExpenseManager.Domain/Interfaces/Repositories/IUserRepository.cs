@@ -8,5 +8,6 @@ namespace HomeExpenseManager.Domain.Interfaces.Repositories
     public interface IUserRepository: IRepositoryBase<User>
     {
         Task<Boolean> CheckExistsEmail(string email);
+        Task<User?> GetByEmailAsync(string email);
     }
 }

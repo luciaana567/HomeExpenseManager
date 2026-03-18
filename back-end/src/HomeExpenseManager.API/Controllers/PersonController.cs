@@ -1,6 +1,7 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
 using HomeExpenseManager.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,6 +19,7 @@ public class PersonController : ControllerBase
     }
 
     // GET BY ID
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<PersonDto>> GetById(Guid id)
     {
@@ -29,17 +31,19 @@ public class PersonController : ControllerBase
     }
 
     //GET ALL
+    [Authorize]
     [HttpGet("GetAll")]
     public async Task<ActionResult<PersonDto>> GetAll()
     {
         var persons = await _service.GetAllAsync();
-        if ( persons.IsNullOrEmpty())
+        if ( persons.Count ==0)
             return NotFound();
 
         return Ok(persons);
     }
 
     // UPDATE
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult<PersonDto>> Update(Guid id, PersonDto dto)
     {
@@ -58,6 +62,7 @@ public class PersonController : ControllerBase
     }
 
     // Consulta de totais por pessoa
+    [Authorize]
     [HttpPut("GetPersonsTotals")]
     public async Task<ActionResult<PersonDto>> GetPersonsTotals()
     {
