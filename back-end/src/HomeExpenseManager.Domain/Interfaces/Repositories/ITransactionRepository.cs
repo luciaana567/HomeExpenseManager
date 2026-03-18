@@ -7,6 +7,6 @@ namespace HomeExpenseManager.Domain.Interfaces.Repositories
 {
     public interface ITransactionRepository : IRepositoryBase<Transaction>
     {
-      
+        IQueryable<Transaction> Query();
     }
 }

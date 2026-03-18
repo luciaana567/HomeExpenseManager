@@ -1,4 +1,5 @@
 using HomeExpenseManager.Application.DTOs;
+using HomeExpenseManager.Application.DTOs.Category;
 using HomeExpenseManager.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -90,14 +91,13 @@ public class CategoriesController : ControllerBase
 
     // Consulta de totais por categoria
     [Authorize]
-    [HttpPut("GetCategoriesTotals")]
-    public async Task<ActionResult<PersonDto>> GetCategoriesTotals()
+    [HttpGet("GetCategoriesTotals")]
+    public async Task<ActionResult<CategoriesSummaryDto>> GetCategoriesTotals([FromQuery] CategoryTotalsQueryDto query)
     {
         try
         {
-            var categories = await _service.GetCategoriesTotals();
-
-            return Ok(categories);
+            var result = await _service.GetCategoriesTotals(query);
+            return Ok(result);
         }
         catch (Exception ex)
         {

@@ -7,6 +7,6 @@ namespace HomeExpenseManager.Domain.Interfaces.Repositories
 {
     public interface ICategoryRepository : IRepositoryBase<Category>
     {
-      
+        IQueryable<Category> Query();
     }
 }

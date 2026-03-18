@@ -14,6 +14,6 @@ namespace HomeExpenseManager.Application.Interfaces
         Task<CategoryDto?> UpdateAsync(Guid id, CategoryDto dto);
         Task<bool> DeleteAsync(Guid id);
         Task<IList<CategoryDto>> GetAllAsync();
-        Task<CategoriesSummaryDto> GetCategoriesTotals();
+        Task<CategoriesSummaryDto> GetCategoriesTotals(CategoryTotalsQueryDto query);
     }
 }

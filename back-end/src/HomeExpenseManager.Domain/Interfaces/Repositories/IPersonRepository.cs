@@ -10,5 +10,6 @@ namespace HomeExpenseManager.Domain.Interfaces.Repositories
 {
     public interface IPersonRepository:IRepositoryBase<Person>
     {
+        IQueryable<Person> Query();
     }
 }

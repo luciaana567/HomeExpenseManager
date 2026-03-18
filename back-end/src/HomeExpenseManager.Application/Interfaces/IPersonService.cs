@@ -12,6 +12,6 @@ namespace HomeExpenseManager.Application.Interfaces
         Task<PersonDto?> GetByIdAsync(Guid id);
         Task<PersonDto?> UpdateAsync(Guid id, PersonDto dto);       
         Task<IList<PersonDto>> GetAllAsync();
-        Task<PersonsSummaryDto> GetPersonsTotals();
+        Task<PersonsSummaryDto> GetPersonsTotals(PersonTotalsQueryDto query);
     }
 }

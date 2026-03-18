@@ -1,4 +1,5 @@
 using HomeExpenseManager.Application.DTOs;
+using HomeExpenseManager.Application.DTOs.Transaction;
 using HomeExpenseManager.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,5 +87,17 @@ public class TransactionsController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpGet("Search")]
+    public async Task<ActionResult<PagedResultDto<TransactionDto>>> Search([FromQuery] TransactionQueryDto query)
+    {
+        var transactions = await _service.SearchAsync(query);
+
+        if (transactions.Items.Count == 0)
+            return NotFound();
+
+        return Ok(transactions);
     }
 }

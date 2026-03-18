@@ -4,17 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeExpenseManager.Application.DTOs.Person
+namespace HomeExpenseManager.Application.DTOs
 {
-    public class PersonsSummaryDto
+    public class PagedResultDto<T>
     {
-        public List<PersonTotalsDto> Persons { get; set; } = new();
-
-        public decimal TotalIncome { get; set; }
-
-        public decimal TotalExpense { get; set; }
-
-        public decimal Balance => TotalIncome - TotalExpense;
+        public List<T> Items { get; set; } = new();
 
         public int PageNumber { get; set; }
 

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using HomeExpenseManager.Application.DTOs.Person;
 using HomeExpenseManager.Domain.Enums;
 using HomeExpenseManager.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeExpenseManager.Application.Services
 {
@@ -66,10 +67,30 @@ namespace HomeExpenseManager.Application.Services
             return personsDto;
         }
 
-        public async Task<PersonsSummaryDto> GetPersonsTotals()
+        public async Task<PersonsSummaryDto> GetPersonsTotals(PersonTotalsQueryDto query)
         {
-            var persons = await _repository.GetAllAsync();
-            var transactions = await _transactionRepository.GetAllAsync();
+            var personsQuery = _repository.Query();
+            var transactionsQuery = _transactionRepository.Query();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                personsQuery = personsQuery
+                    .Where(p => p.Name.Contains(query.Name));
+            }
+
+            var totalItems = await personsQuery.CountAsync();
+
+            var persons = await personsQuery
+                .OrderBy(p => p.Name)
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            var personIds = persons.Select(p => p.Id).ToList();
+           
+            var transactions = await transactionsQuery
+                .Where(t => personIds.Contains(t.PersonId))
+                .ToListAsync();
 
             var personsTotals = persons.Select(person =>
             {
@@ -97,7 +118,10 @@ namespace HomeExpenseManager.Application.Services
             {
                 Persons = personsTotals,
                 TotalIncome = personsTotals.Sum(p => p.TotalIncome),
-                TotalExpense = personsTotals.Sum(p => p.TotalExpense)
+                TotalExpense = personsTotals.Sum(p => p.TotalExpense),
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalItems = totalItems
             };
         }
 

@@ -11,6 +11,8 @@ using HomeExpenseManager.Application.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using HomeExpenseManager.Domain.Enums;
 using HomeExpenseManager.Infrastructure.Repositories;
+using HomeExpenseManager.Application.DTOs.Transaction;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeExpenseManager.Application.Services
 {
@@ -112,8 +114,68 @@ namespace HomeExpenseManager.Application.Services
             var TransactionsDto = Transactions.Select(Transaction => _mapper.Map<TransactionDto>(Transaction)).ToList();
 
             return TransactionsDto;
-        }   
-        
+        }
+
+        public async Task<PagedResultDto<TransactionDto>> SearchAsync(TransactionQueryDto query)
+        {
+            if (query.PageNumber <= 0)
+                query.PageNumber = 1;
+
+            if (query.PageSize <= 0)
+                query.PageSize = 10;
+
+            var transactionsQuery = _repository.Query().AsNoTracking();
+
+            if (query.StartDate.HasValue)
+            {
+                transactionsQuery = transactionsQuery
+                    .Where(t => t.TransactionDate >= query.StartDate.Value);
+            }
+
+            if (query.EndDate.HasValue)
+            {
+                transactionsQuery = transactionsQuery
+                    .Where(t => t.TransactionDate <= query.EndDate.Value);
+            }
+
+            if (query.Type.HasValue)
+            {
+                transactionsQuery = transactionsQuery
+                    .Where(t => t.Type == query.Type.Value);
+            }
+
+            if (query.CategoryId.HasValue)
+            {
+                transactionsQuery = transactionsQuery
+                    .Where(t => t.CategoryId == query.CategoryId.Value);
+            }
+
+            var totalItems = await transactionsQuery.CountAsync();
+
+            var transactions = await transactionsQuery
+                .OrderByDescending(t => t.TransactionDate)
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(t => new TransactionDto
+                {
+                    Id = t.Id,
+                    Description = t.Description,
+                    Type = t.Type,
+                    TransactionDate = t.TransactionDate,
+                    CategoryId = t.CategoryId,
+                    PersonId = t.PersonId
+                })
+                .ToListAsync();
+
+            return new PagedResultDto<TransactionDto>
+            {
+                Items = transactions,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalItems = totalItems
+            };
+        }
+
         private bool CheckCategory(TransactionType transactionType, Purpose purposeCategory)
         {
             var isValid = false;

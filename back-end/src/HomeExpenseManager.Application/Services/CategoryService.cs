@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using HomeExpenseManager.Application.DTOs.Category;
 using HomeExpenseManager.Domain.Enums;
 using HomeExpenseManager.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeExpenseManager.Application.Services
 {
@@ -82,10 +83,32 @@ namespace HomeExpenseManager.Application.Services
             return categorysDto;
         }
 
-        public async Task<CategoriesSummaryDto> GetCategoriesTotals()
+        public async Task<CategoriesSummaryDto> GetCategoriesTotals(CategoryTotalsQueryDto query)
         {
-            var categories = await _repository.GetAllAsync();
-            var transactions = await _transactionRepository.GetAllAsync();
+            var categoriesQuery = _repository.Query().AsNoTracking();
+            var transactionsQuery = _transactionRepository.Query().AsNoTracking();
+                      
+            if (!string.IsNullOrWhiteSpace(query.Description))
+            {
+                categoriesQuery = categoriesQuery
+                    .Where(c => c.Description.Contains(query.Description));
+            }
+
+            var totalItems = await categoriesQuery.CountAsync();
+
+            
+            var categories = await categoriesQuery
+                .OrderBy(c => c.Description)
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            var categoryIds = categories.Select(c => c.Id).ToList();
+
+          
+            var transactions = await transactionsQuery
+                .Where(t => categoryIds.Contains(t.CategoryId))
+                .ToListAsync();
 
             var categoriesTotals = categories.Select(category =>
             {
@@ -113,7 +136,10 @@ namespace HomeExpenseManager.Application.Services
             {
                 Categories = categoriesTotals,
                 TotalIncome = categoriesTotals.Sum(c => c.TotalIncome),
-                TotalExpense = categoriesTotals.Sum(c => c.TotalExpense)
+                TotalExpense = categoriesTotals.Sum(c => c.TotalExpense),
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalItems = totalItems
             };
         }
 

@@ -15,5 +15,10 @@ namespace HomeExpenseManager.Infrastructure.Repositories
         {
             _db = db;
         }
+
+        public IQueryable<Transaction> Query()
+        {
+            return _db.Transactions;
+        }
     }
 }

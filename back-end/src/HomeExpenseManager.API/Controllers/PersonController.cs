@@ -1,4 +1,5 @@
 using HomeExpenseManager.Application.DTOs;
+using HomeExpenseManager.Application.DTOs.Person;
 using HomeExpenseManager.Application.Interfaces;
 using HomeExpenseManager.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -64,11 +65,11 @@ public class PersonController : ControllerBase
     // Consulta de totais por pessoa
     [Authorize]
     [HttpPut("GetPersonsTotals")]
-    public async Task<ActionResult<PersonDto>> GetPersonsTotals()
+    public async Task<ActionResult<PersonsSummaryDto>> GetPersonsTotals([FromQuery] PersonTotalsQueryDto query)
     {
         try
         {
-            var persons = await _service.GetPersonsTotals();
+            var persons = await _service.GetPersonsTotals(query);
 
             return Ok(persons);
         }
