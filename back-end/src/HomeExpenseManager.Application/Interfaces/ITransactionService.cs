@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HomeExpenseManager.Application.Common;
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.DTOs.Transaction;
 
-namespace HomeExpenseManager.Application.Interfaces
+namespace HomeExpenseManager.Application.Interfaces;
+
+public interface ITransactionService
 {
-    public interface ITransactionService
-    {
-        Task<TransactionDto?> GetByIdAsync(Guid id);
-        Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
-        Task<TransactionDto?> UpdateAsync(Guid id, UpdateTransactionDto dto);
-        Task<bool> DeleteAsync(Guid id);
-        Task<IList<TransactionDto>> GetAllAsync();
-        Task<PagedResultDto<TransactionDto>> SearchAsync(TransactionQueryDto query);
-    }
+    Task<Result<TransactionDto>> GetByIdAsync(Guid id);
+    Task<Result<TransactionDto>> CreateAsync(CreateTransactionDto dto);
+    Task<Result<TransactionDto>> UpdateAsync(Guid id, UpdateTransactionDto dto);
+    Task<Result<bool>> DeleteAsync(Guid id);
+    Task<Result<List<TransactionDto>>> GetAllAsync();
+    Task<Result<PagedResult<TransactionDto>>> SearchAsync(TransactionQueryDto query);
 }

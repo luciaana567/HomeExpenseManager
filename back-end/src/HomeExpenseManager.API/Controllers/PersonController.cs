@@ -1,15 +1,14 @@
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.DTOs.Person;
 using HomeExpenseManager.Application.Interfaces;
-using HomeExpenseManager.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace HomeExpenseManager.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PersonController : ControllerBase
 {
     private readonly IPersonService _service;
@@ -19,64 +18,39 @@ public class PersonController : ControllerBase
         _service = service;
     }
 
-    // GET BY ID
-    [Authorize]
-    [HttpGet("{id}")]
-    public async Task<ActionResult<PersonDto>> GetById(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var person = await _service.GetByIdAsync(id);
-        if (person == null)
-            return NotFound();
+        var result = await _service.GetByIdAsync(id);
 
-        return Ok(person);
+        if (!result.Success)
+            return NotFound(result);
+
+        return Ok(result);
     }
 
-    //GET ALL
-    [Authorize]
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<PersonDto>> GetAll()
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        var persons = await _service.GetAllAsync();
-        if ( persons.Count ==0)
-            return NotFound();
-
-        return Ok(persons);
+        var result = await _service.GetAllAsync();
+        return Ok(result);
     }
 
-    // UPDATE
-    [Authorize]
-    [HttpPut("{id}")]
-    public async Task<ActionResult<PersonDto>> Update(Guid id, PersonDto dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] PersonDto dto)
     {
-        try
-        {
-            var person = await _service.UpdateAsync(id, dto);
-            if (person == null)
-                return NotFound();
+        var result = await _service.UpdateAsync(id, dto);
 
-            return Ok(person);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        if (!result.Success)
+            return NotFound(result);
+
+        return Ok(result);
     }
 
-    // Consulta de totais por pessoa
-    [Authorize]
-    [HttpPut("GetPersonsTotals")]
-    public async Task<ActionResult<PersonsSummaryDto>> GetPersonsTotals([FromQuery] PersonTotalsQueryDto query)
+    [HttpGet("totals")]
+    public async Task<IActionResult> GetPersonsTotals([FromQuery] PersonTotalsQueryDto query)
     {
-        try
-        {
-            var persons = await _service.GetPersonsTotals(query);
-
-            return Ok(persons);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _service.GetPersonsTotals(query);
+        return Ok(result);
     }
-
 }

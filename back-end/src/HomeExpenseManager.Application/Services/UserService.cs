@@ -1,110 +1,97 @@
-using Microsoft.AspNetCore.Identity;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HomeExpenseManager.Domain.Entities;
-using HomeExpenseManager.Domain.Interfaces.Repositories;
+using HomeExpenseManager.Application.Common;
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
-using Microsoft.IdentityModel.Tokens;
+using HomeExpenseManager.Domain.Entities;
+using HomeExpenseManager.Domain.Interfaces.Repositories;
+using Microsoft.AspNetCore.Identity;
 
-namespace HomeExpenseManager.Application.Services
+namespace HomeExpenseManager.Application.Services;
+
+public class UserService : IUserService
 {
-    public class UserService : IUserService
+    private readonly IUserRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly PasswordHasher<User> _passwordHasher;
+
+    public UserService(IUserRepository repository, IMapper mapper)
     {
-        private readonly IUserRepository _repository;
-        private readonly IMapper _mapper;
-        private readonly PasswordHasher<User> _passwordHasher;
+        _repository = repository;
+        _mapper = mapper;
+        _passwordHasher = new PasswordHasher<User>();
+    }
 
-        public UserService(IUserRepository repository, IMapper mapper)
+    public async Task<Result<UserDto>> GetByIdAsync(Guid id)
+    {
+        var user = await _repository.GetByIdAsync(id);
+
+        if (user is null)
+            return Result<UserDto>.Fail("User not found.");
+
+        return Result<UserDto>.Ok(_mapper.Map<UserDto>(user));
+    }
+
+    public async Task<Result<UserDto>> CreateAsync(CreateUserDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+            return Result<UserDto>.Fail("Invalid user data.");
+
+        var emailExists = await _repository.CheckExistsEmail(dto.Email);
+        if (emailExists)
+            return Result<UserDto>.Fail("Email already exists.");
+
+        var user = _mapper.Map<User>(dto);
+        user.Password = _passwordHasher.HashPassword(user, dto.Password);
+
+        await _repository.AddAsync(user);
+
+        return Result<UserDto>.Ok(_mapper.Map<UserDto>(user), "User created successfully.");
+    }
+
+    public async Task<Result<UserDto>> UpdateAsync(Guid id, UpdateUserDto dto)
+    {
+        var user = await _repository.GetByIdAsync(id);
+
+        if (user is null)
+            return Result<UserDto>.Fail("User not found.");
+
+        if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != user.Email)
         {
-            _repository = repository;
-            _mapper = mapper;
-            _passwordHasher = new PasswordHasher<User>();
+            var emailExists = await _repository.CheckExistsEmail(dto.Email);
+            if (emailExists)
+                return Result<UserDto>.Fail("Email already exists.");
+
+            user.Email = dto.Email;
         }
 
-        public async Task<UserDto?> GetByIdAsync(Guid id)
-        {
-            var user = await _repository.GetByIdAsync(id);
+        if (!string.IsNullOrWhiteSpace(dto.UserName))
+            user.UserName = dto.UserName;
 
-            if (user == null)
-                return null;
-
-            return _mapper.Map<UserDto>(user);
-        }
-
-        public async Task<UserDto> CreateAsync(CreateUserDto dto)
-        {
-            var user = _mapper.Map<User>(dto);
-
-
-            if (string.IsNullOrEmpty(dto.Password) || string.IsNullOrEmpty(dto.Email))
-                throw new Exception("invalid user");
-
-            var checkEmail = await _repository.CheckExistsEmail(dto.Email);
-
-            if (checkEmail)
-                throw new Exception("Email already exists");
-
-
-            // hash da senha
+        if (!string.IsNullOrWhiteSpace(dto.Password))
             user.Password = _passwordHasher.HashPassword(user, dto.Password);
 
-            await _repository.AddAsync(user);
+        await _repository.UpdateAsync(user);
 
-            return _mapper.Map<UserDto>(user);
-        }
+        return Result<UserDto>.Ok(_mapper.Map<UserDto>(user), "User updated successfully.");
+    }
 
-        public async Task<UserDto?> UpdateAsync(Guid id, UpdateUserDto dto)
-        {
-            var user = await _repository.GetByIdAsync(id);
+    public async Task<Result<bool>> DeleteAsync(Guid id)
+    {
+        var user = await _repository.GetByIdAsync(id);
 
-            if (user == null)
-                return null;
+        if (user is null)
+            return Result<bool>.Fail("User not found.");
 
-            if (!dto.Email.IsNullOrEmpty())
-            {
-                var checkEmail = await _repository.CheckExistsEmail(dto.Email);
+        await _repository.DeleteAsync(user);
 
-                if (checkEmail && !user.Email.Equals(dto.Email))
-                    throw new Exception("Email already exists");
-            }
+        return Result<bool>.Ok(true, "User deleted successfully.");
+    }
 
-            user.UserName = dto.UserName.IsNullOrEmpty() ? user.UserName : dto.UserName;
-            user.Email = dto.Email.IsNullOrEmpty() ? user.Email : dto.Email;
+    public async Task<Result<List<UserDto>>> GetAllAsync()
+    {
+        var users = await _repository.GetAllAsync();
+        var dtos = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(dto.Password))
-            {
-                user.Password = _passwordHasher.HashPassword(user, dto.Password);
-            }
-
-            await _repository.UpdateAsync(user);
-
-            return _mapper.Map<UserDto>(user);
-        }
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var user = await _repository.GetByIdAsync(id);
-
-            if (user == null)
-                return false;
-
-            await _repository.DeleteAsync(user);
-
-            return true;
-        }
-
-        public async Task<IList<UserDto>> GetAllAsync()
-        {
-            var users = await  _repository.GetAllAsync();
-
-            var usersDto = users.Select(user => _mapper.Map<UserDto>(user)).ToList();
-
-            return usersDto;
-        }      
-
+        return Result<List<UserDto>>.Ok(dtos);
     }
 }

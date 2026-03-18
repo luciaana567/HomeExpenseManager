@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HomeExpenseManager.Application.Common;
 using HomeExpenseManager.Application.DTOs;
 
-namespace HomeExpenseManager.Application.Interfaces
+namespace HomeExpenseManager.Application.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<UserDto?> GetByIdAsync(Guid id);
-        Task<UserDto> CreateAsync(CreateUserDto dto);
-        Task<UserDto?> UpdateAsync(Guid id, UpdateUserDto dto);
-        Task<bool> DeleteAsync(Guid id);
-        Task<IList<UserDto>> GetAllAsync();
-    }
+    Task<Result<UserDto>> GetByIdAsync(Guid id);
+    Task<Result<UserDto>> CreateAsync(CreateUserDto dto);
+    Task<Result<UserDto>> UpdateAsync(Guid id, UpdateUserDto dto);
+    Task<Result<bool>> DeleteAsync(Guid id);
+    Task<Result<List<UserDto>>> GetAllAsync();
 }

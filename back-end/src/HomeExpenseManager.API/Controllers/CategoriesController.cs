@@ -1,5 +1,5 @@
 using HomeExpenseManager.Application.DTOs;
-using HomeExpenseManager.Application.DTOs.Transaction;
+using HomeExpenseManager.Application.DTOs.Category;
 using HomeExpenseManager.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,17 +9,17 @@ namespace HomeExpenseManager.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class TransactionsController : ControllerBase
+public class CategoriesController : ControllerBase
 {
-    private readonly ITransactionService _service;
+    private readonly ICategoryService _service;
 
-    public TransactionsController(ITransactionService service)
+    public CategoriesController(ICategoryService service)
     {
         _service = service;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTransactionDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
     {
         var result = await _service.CreateAsync(dto);
 
@@ -41,13 +41,6 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery] TransactionQueryDto query)
-    {
-        var result = await _service.SearchAsync(query);
-        return Ok(result);
-    }
-
-    [HttpGet("all")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _service.GetAllAsync();
@@ -55,7 +48,7 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTransactionDto dto)
+    public async Task<IActionResult> Update(Guid id, [FromBody] CategoryDto dto)
     {
         var result = await _service.UpdateAsync(id, dto);
 
@@ -74,5 +67,12 @@ public class TransactionsController : ControllerBase
             return NotFound(result);
 
         return NoContent();
+    }
+
+    [HttpGet("totals")]
+    public async Task<IActionResult> GetCategoriesTotals([FromQuery] CategoryTotalsQueryDto query)
+    {
+        var result = await _service.GetCategoriesTotals(query);
+        return Ok(result);
     }
 }

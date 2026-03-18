@@ -2,7 +2,6 @@ using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace HomeExpenseManager.API.Controllers;
 
@@ -17,74 +16,58 @@ public class UsersController : ControllerBase
         _service = service;
     }
 
-    // CREATE - cria usuário
     [AllowAnonymous]
     [HttpPost]
-    public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
-        try
-        {
-            var user = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _service.CreateAsync(dto);
+
+        if (!result.Success)
+            return BadRequest(result);
+
+        return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result);
     }
 
-
-    // GET BY ID
     [Authorize]
-    [HttpGet("{id}")]
-    public async Task<ActionResult<UserDto>> GetById(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var user = await _service.GetByIdAsync(id);
-        if (user == null)
-            return NotFound();
+        var result = await _service.GetByIdAsync(id);
 
-        return Ok(user);
+        if (!result.Success)
+            return NotFound(result);
+
+        return Ok(result);
     }
 
-    //GET ALL
     [Authorize]
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<UserDto>> GetAll()
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        var users = await _service.GetAllAsync();
-        if ( users.Count == 0)
-            return NotFound();
-
-        return Ok(users);
+        var result = await _service.GetAllAsync();
+        return Ok(result);
     }
 
-    // UPDATE
     [Authorize]
-    [HttpPut("{id}")]
-    public async Task<ActionResult<UserDto>> Update(Guid id, UpdateUserDto dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserDto dto)
     {
-        try
-        {
-            var user = await _service.UpdateAsync(id, dto);
-            if (user == null)
-                return NotFound();
+        var result = await _service.UpdateAsync(id, dto);
 
-            return Ok(user);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        if (!result.Success)
+            return BadRequest(result);
+
+        return Ok(result);
     }
 
-    // DELETE
     [Authorize]
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        var deleted = await _service.DeleteAsync(id);
-        if (!deleted)
-            return NotFound();
+        var result = await _service.DeleteAsync(id);
+
+        if (!result.Success)
+            return NotFound(result);
 
         return NoContent();
     }

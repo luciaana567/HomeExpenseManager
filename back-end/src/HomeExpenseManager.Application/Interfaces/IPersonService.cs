@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HomeExpenseManager.Application.Common;
 using HomeExpenseManager.Application.DTOs;
 using HomeExpenseManager.Application.DTOs.Person;
 
-namespace HomeExpenseManager.Application.Interfaces
+namespace HomeExpenseManager.Application.Interfaces;
+
+public interface IPersonService
 {
-    public interface IPersonService
-    {
-        Task<PersonDto?> GetByIdAsync(Guid id);
-        Task<PersonDto?> UpdateAsync(Guid id, PersonDto dto);       
-        Task<IList<PersonDto>> GetAllAsync();
-        Task<PersonsSummaryDto> GetPersonsTotals(PersonTotalsQueryDto query);
-    }
+    Task<Result<PersonDto>> GetByIdAsync(Guid id);
+    Task<Result<PersonDto>> UpdateAsync(Guid id, PersonDto dto);
+    Task<Result<List<PersonDto>>> GetAllAsync();
+    Task<Result<PersonsSummaryDto>> GetPersonsTotals(PersonTotalsQueryDto query);
 }
