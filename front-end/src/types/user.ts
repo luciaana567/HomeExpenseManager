@@ -1,9 +1,9 @@
-import type { CreatePerson, Person } from "./person";
+import type { CreatePersonRequest, Person } from "./person";
 
-export type CreateUser = {
+export type CreateUserRequest = {
   email: string;
   password: string;
-  person: CreatePerson;
+  person: CreatePersonRequest;
 };
 
 export type User = {
@@ -14,7 +14,7 @@ export type User = {
   person?: Person;
 };
 
-export type UpdateUser = {
+export type UpdateUserRequest = {
   id: number;
   email?: string;
   password?: string;
