@@ -9,7 +9,7 @@ namespace HomeExpenseManager.Domain.Enums
     public enum Purpose
     {
         Expense = 1,
-        Revenue = 2,
+        Income = 2,
         Both = 3,
     }
 }
