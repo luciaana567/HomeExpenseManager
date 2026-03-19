@@ -63,6 +63,11 @@ export default function RegisterPage() {
       isValid = false;
     }
 
+    if (!formData.birthday.trim()) {
+      newErrors.birthday = "Informe sua data de nascimento.";
+      isValid = false;
+    }
+
     if (!formData.password.trim()) {
       newErrors.password = "Informe sua senha.";
       isValid = false;
@@ -96,7 +101,7 @@ export default function RegisterPage() {
         password: formData.password,
         person: {
           name: formData.name,
-          birthday: formData.birthday || null,
+          birthday: formData.birthday,
         },
       });
 
