@@ -5,4 +5,7 @@ export type LoginRequest = {
 
 export type LoginResponse = {
   token: string;
+  userId: string;
+  personId: string;
+  name: string;
 };

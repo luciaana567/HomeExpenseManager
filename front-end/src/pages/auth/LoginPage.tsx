@@ -72,6 +72,9 @@ export default function LoginPage() {
       });
 
       localStorage.setItem("token", response.token);
+      localStorage.setItem("userId", response.userId);
+      localStorage.setItem("personId", response.personId);
+      localStorage.setItem("name", response.name);
 
       navigate("/");
     } catch (error) {
