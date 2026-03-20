@@ -14,7 +14,7 @@ export async function getPersonsSummary(
   filters?: PersonsSummaryFilters,
 ): Promise<PersonsSummaryResponse> {
   const response = await api.get<Result<PersonsSummaryResponse>>(
-    "/Person/GetPersonsTotals",
+    "/Person/totals",
     {
       params: filters,
     },
@@ -27,7 +27,7 @@ export async function getCategoriesSummary(
   filters?: CategoriesSummaryFilters,
 ): Promise<CategoriesSummaryResponse> {
   const response = await api.get<Result<CategoriesSummaryResponse>>(
-    "/Category/GetCategoriesTotals",
+    "/Categories/totals",
     {
       params: filters,
     },

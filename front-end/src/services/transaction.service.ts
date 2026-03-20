@@ -1,6 +1,6 @@
 import { api } from "../api/axios";
-import { handleResponse } from "../utils/handleResponse";
-import type { Result } from "../types/common";
+import { handleResponse, handleResponsePaged } from "../utils/handleResponse";
+import type { PagedResult, Result } from "../types/common";
 import type {
   CreateTransactionRequest,
   Transaction,
@@ -10,12 +10,16 @@ import type {
 
 export async function getTransactions(
   filters?: TransactionFilters,
-): Promise<Transaction[]> {
-  const response = await api.get<Result<Transaction[]>>("/Transaction/GetAll", {
-    params: filters,
-  });
+): Promise<PagedResult<Transaction>> {
+  const response = (await api.get)<Result<PagedResult<Transaction>>>(
+    "/Transactions",
+    {
+      params: filters,
+    },
+  );
+  const data = (await response).data;
 
-  return handleResponse(response.data);
+  return handleResponsePaged(data);
 }
 
 export async function getTransactionById(id: string): Promise<Transaction> {

@@ -18,9 +18,9 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-64 h-full bg-slate-900 text-white flex flex-col">
+    <aside className="w-54 h-full bg-slate-900 text-white flex flex-col">
       <div className="px-6 py-5 border-b border-slate-800">
-        <h1 className="text-xl font-bold">Home Expense</h1>
+        <h2 className="text-xl font-bold">Home Expense</h2>
         <p className="text-sm text-slate-400 mt-1">Gerenciador financeiro</p>
       </div>
 
