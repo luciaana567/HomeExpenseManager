@@ -5,6 +5,7 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { registerUser } from "../../services/auth.service";
 import { useToast } from "../../hooks/useToast";
+import MediumCard from "../../components/ui/MediumCard"
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -120,11 +121,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
-      <Card
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-110">
+      <MediumCard
         title="Criar conta"
-        subtitle="Cadastre-se para começar a usar o sistema"
+        subtitle=""
       >
+         <div className="mt-6 flex justify-center">
+          <img
+            src="/bolsa-de-dinheiro.gif"
+            alt="Dashboard"
+            className="w-64 rounded-xl md:w-40"
+          />
+        </div>
+        <p className="text-center py-1" >Cadastre-se para começar a usar o sistema</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             id="name"
@@ -191,7 +200,7 @@ export default function RegisterPage() {
             Entrar
           </Link>
         </p>
-      </Card>
+      </MediumCard>
     </div>
   );
 }

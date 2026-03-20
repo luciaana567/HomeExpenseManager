@@ -90,12 +90,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-80">
       <MediumCard
         title="Entrar"
-        subtitle="Acesse sua conta para gerenciar seus gastos"
-        alignment ="left"
+        subtitle=""
+        localItens ="center"
       >
+        <div className="mt-6 flex justify-center">
+          <img
+            src="/bolsa-de-dinheiro.gif"
+            alt="Dashboard"
+            className="w-64 rounded-xl md:w-40"
+          />
+        </div>
+        <p className="text-center py-1" >Acesse sua conta para gerenciar seus gastos</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             id="email"

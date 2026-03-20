@@ -3,10 +3,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 const menuItems = [
   { label: "Início", path: "/" },
   { label: "Transações", path: "/transacoes" },
-  { label: "Dados da pessoa", path: "/perfil" },
   { label: "Categorias", path: "/categorias" },
-  { label: "Sumário de pessoas", path: "/sumario-pessoas" },
-  { label: "Sumário de categorias", path: "/sumario-categorias" },
+  { label: "Resumo por pessoas", path: "/sumario-pessoas" },
+  { label: "Resumo por categorias", path: "/sumario-categorias" },
+  { label: "Dados pessoais", path: "/perfil" },
 ];
 
 export default function Sidebar() {
