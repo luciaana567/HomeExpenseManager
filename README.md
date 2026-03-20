@@ -1,190 +1,175 @@
-# 💰 HomeExpenseManager
+# 💸 HomeExpenseManager
 
-Sistema de controle de gastos residenciais desenvolvido com foco em boas
-práticas de arquitetura, segurança e organização de código.
+Sistema para controle de gastos residenciais, desenvolvido como teste
+técnico para vaga de Desenvolvedor Full Stack.
 
 ---
 
 ## 📌 Sobre o projeto
 
-O **HomeExpenseManager** é uma API RESTful para gerenciamento financeiro
-pessoal/residencial, permitindo o controle de:
+Aplicação full stack para gerenciamento de:
 
-- usuários\
-- pessoas\
-- categorias\
-- transações financeiras
+- Pessoas\
+- Categorias\
+- Transações financeiras
 
-O projeto foi desenvolvido com foco em:
-
-- arquitetura em camadas\
-- autenticação com JWT\
-- validação de dados\
-- padronização de respostas\
-- tratamento global de exceções\
-- documentação com Swagger
-
----
-
-## 🚀 Tecnologias utilizadas
-
-- .NET 9\
-- ASP.NET Core Web API\
-- Entity Framework Core\
-- SQLite\
-- JWT (JSON Web Token)\
-- Swagger / OpenAPI\
-- FluentValidation\
-- AutoMapper
+Permite o cálculo de receitas, despesas e saldo por pessoa e por
+categoria.
 
 ---
 
 ## 🧱 Arquitetura
 
-O projeto segue uma arquitetura em camadas para garantir separação de
-responsabilidades, escalabilidade e manutenção facilitada.
+O projeto está dividido em duas aplicações independentes:
 
-### 📂 Estrutura
-
-- **API**
-  - Controllers\
-  - Middlewares\
-  - Extensions\
-  - Configuração da aplicação
-- **Application**
-  - DTOs\
-  - Services\
-  - Interfaces\
-  - Validators (FluentValidation)\
-  - Dependency Injection\
-  - AutoMapper Profiles
-- **Domain**
-  - Entidades\
-  - Enums\
-  - Interfaces de repositório
-- **Infrastructure**
-  - DbContext\
-  - Repositórios\
-  - Persistência de dados
+- **Back-end:** API REST em .NET\
+- **Front-end:** Aplicação web em React com TypeScript
 
 ---
 
-## ⚙️ Funcionalidades
+## ⚙️ Tecnologias
 
-- Cadastro de usuários\
-- Autenticação com JWT\
-- CRUD de pessoas\
-- CRUD de categorias\
-- CRUD de transações\
-- Filtros de transações por:
-  - período\
-  - tipo\
-  - categoria\
-  - pessoa\
-- Paginação de resultados\
-- Totalizadores por pessoa\
-- Totalizadores por categoria\
-- Validação com FluentValidation\
-- Middleware global de tratamento de erros\
-- Documentação com Swagger\
-- Proteção de endpoints com Bearer Token
+### 🔙 Back-end
 
----
+- .NET 9\
+- ASP.NET Core Web API\
+- Entity Framework Core\
+- SQLite\
+- JWT Authentication\
+- AutoMapper\
+- FluentValidation\
+- Swagger
 
-## 🧠 Boas práticas aplicadas
+### 🔜 Front-end
 
-- Separação em camadas (Clean Architecture-like)\
-- Configuração modular com extension methods\
-- JWT configurado via `appsettings.json`\
-- Middleware global de exceções\
-- Validação centralizada com FluentValidation\
-- Respostas padronizadas com Result / PagedResult\
-- CORS preparado para integração com front-end
+- React\
+- TypeScript\
+- Vite\
+- React Router\
+- Axios\
+- TailwindCSS\
+- Recharts
 
 ---
 
-## ▶️ Como rodar o projeto
+## 📂 Estrutura
 
-### 📋 Pré-requisitos
+### Back-end
 
-- .NET SDK 9.0\
-- Git
+    HomeExpenseManager.API
+    HomeExpenseManager.Application
+    HomeExpenseManager.Domain
+    HomeExpenseManager.Infrastructure
 
----
+### Front-end
 
-### 1. Clonar o repositório
-
-git clone https://github.com/luciaana567/HomeExpenseManager.git\
-cd HomeExpenseManager
-
----
-
-### 2. Restaurar dependências
-
-dotnet restore
-
----
-
-### 3. Executar a API
-
-dotnet run --project back-end/src/HomeExpenseManager.API
+    src/
+      components/
+      pages/
+      services/
+      hooks/
+      contexts/
+      routes/
+      types/
 
 ---
 
-### 🗄️ Banco de dados
+## 🚀 Funcionalidades
 
-A aplicação já está configurada para aplicar as migrations
-automaticamente ao iniciar.
+### 👤 Pessoas
 
-Ou seja, o banco será criado/atualizado automaticamente ao rodar a API.
+- Criar, editar, listar e excluir\
+- Campos: nome e idade\
+- Exclusão remove transações associadas
 
 ---
 
-### 📖 Swagger
+### 🏷️ Categorias
 
-Após iniciar a aplicação, acesse:
+- Criar e listar\
+- Finalidade:
+  - Receita\
+  - Despesa\
+  - Ambas
 
-http://localhost:xxxx/
+---
 
-A porta pode variar conforme o ambiente.
+### 💰 Transações
+
+- Criar, listar, editar e excluir\
+- Campos:
+  - Descrição\
+  - Valor\
+  - Tipo\
+  - Data\
+  - Categoria\
+  - Pessoa
+
+---
+
+## 📏 Regras de negócio
+
+- Menores de 18 anos só podem cadastrar despesas\
+- Categorias são validadas conforme o tipo:
+  - Receita → categorias de receita ou ambas\
+  - Despesa → categorias de despesa ou ambas\
+- Valor deve ser maior que zero\
+- Exclusão de pessoa remove suas transações
+
+---
+
+## 📊 Consultas
+
+### Totais por pessoa
+
+- Total de receitas\
+- Total de despesas\
+- Saldo\
+- Total geral
+
+### Totais por categoria (opcional)
+
+- Totais por categoria\
+- Saldo\
+- Total geral
 
 ---
 
 ## 🔐 Autenticação
 
-Para acessar endpoints protegidos:
-
-1.  Faça login\
-2.  Copie o token JWT retornado\
-3.  Clique em **Authorize** no Swagger\
-4.  Informe:
-
-Bearer SEU_TOKEN
+- JWT\
+- Rotas protegidas
 
 ---
 
-## 🌐 CORS
+## ▶️ Como executar
 
-A API está configurada para permitir integração com front-end local:
+### 🔙 Back-end
 
-- http://localhost:5173\
-- http://localhost:3000
+```bash
+cd back-end/src/HomeExpenseManager.API
+restaure os paoctes do projeto
+dotnet run
+```
 
----
+Swagger:
 
-## 📌 Próximas melhorias
-
-- Testes unitários\
-- Testes de integração\
-- Pipeline CI/CD\
-- Dockerização\
-- Versionamento de API\
-- Refresh Token
+    https://localhost:7249/index.html
 
 ---
 
-## 👩‍💻 Autor
+### 🔜 Front-end
 
-Desenvolvido por **Luciana Silva Araújo Costa**
+```bash
+cd front-end
+npm install
+npm run dev
+```
 
-GitHub: https://github.com/luciaana567
+    http://localhost:5173
+
+---
+
+👩‍💻 Desenvolvido por
+
+Luciana Costa
