@@ -75,4 +75,15 @@ public class CategoriesController : ControllerBase
         var result = await _service.GetCategoriesTotals(query);
         return Ok(result);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] CategoryQueryDto query)
+    {
+        var result = await _service.GetAllAsync(query);
+
+        if (!result.Success)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
 }

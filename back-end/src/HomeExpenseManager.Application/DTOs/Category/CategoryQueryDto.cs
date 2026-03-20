@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace HomeExpenseManager.Application.DTOs.Category
 {
-    public class CategoryTotalsQueryDto
+    public class CategoryQueryDto
     {
         public string? Description { get; set; }
-
+        public Purpose? Purpose { get; set; }
         public int PageNumber { get; set; } = 1;
-
         public int PageSize { get; set; } = 10;
     }
 }

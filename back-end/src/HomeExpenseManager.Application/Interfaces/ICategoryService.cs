@@ -12,4 +12,5 @@ public interface ICategoryService
     Task<Result<bool>> DeleteAsync(Guid id);
     Task<Result<List<CategoryDto>>> GetAllAsync();
     Task<Result<CategoriesSummaryDto>> GetCategoriesTotals(CategoryTotalsQueryDto query);
+    Task<Result<PagedResult<CategoryDto>>> GetAllAsync(CategoryQueryDto query);
 }

@@ -137,4 +137,44 @@ public class CategoryService : ICategoryService
 
         return Result<CategoriesSummaryDto>.Ok(summary);
     }
+
+    public async Task<Result<PagedResult<CategoryDto>>> GetAllAsync(CategoryQueryDto query)
+    {
+        query.PageNumber = query.PageNumber <= 0 ? 1 : query.PageNumber;
+        query.PageSize = query.PageSize <= 0 ? 10 : query.PageSize;
+
+        var categoriesQuery = _repository.Query().AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(query.Description))
+        {
+            categoriesQuery = categoriesQuery.Where(c =>
+                c.Description.Contains(query.Description));
+        }
+
+        if (query.Purpose.HasValue)
+        {
+            categoriesQuery = categoriesQuery.Where(c =>
+                c.Purpose == query.Purpose.Value);
+        }
+
+        var totalItems = await categoriesQuery.CountAsync();
+
+        var categories = await categoriesQuery
+            .OrderBy(c => c.Description)
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync();
+
+        var items = _mapper.Map<List<CategoryDto>>(categories);
+
+        var result = new PagedResult<CategoryDto>
+        {
+            Items = items,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
+            TotalItems = totalItems
+        };
+
+        return Result<PagedResult<CategoryDto>>.Ok(result);
+    }
 }
