@@ -19,6 +19,7 @@ export type UpdateCategoryRequest = {
 
 export type CategoryFilters = {
   description?: string;
+  purpose?: Purpose;
   pageNumber?: number;
   pageSize?: number;
 };

@@ -11,21 +11,18 @@ import type {
 export async function getTransactions(
   filters?: TransactionFilters,
 ): Promise<PagedResult<Transaction>> {
-  const response = (await api.get)<Result<PagedResult<Transaction>>>(
+  const response = await api.get<Result<PagedResult<Transaction>>>(
     "/Transactions",
     {
       params: filters,
     },
   );
-  const data = (await response).data;
 
-  return handleResponsePaged(data);
+  return handleResponsePaged(response.data);
 }
 
 export async function getTransactionById(id: string): Promise<Transaction> {
-  const response = await api.get<Result<Transaction>>(
-    `/Transaction/GetById/${id}`,
-  );
+  const response = await api.get<Result<Transaction>>(`/Transactions${id}`);
 
   return handleResponse(response.data);
 }
@@ -34,7 +31,7 @@ export async function createTransaction(
   payload: CreateTransactionRequest,
 ): Promise<Transaction> {
   const response = await api.post<Result<Transaction>>(
-    "/Transaction/Create",
+    "/Transactions",
     payload,
   );
 
@@ -46,7 +43,7 @@ export async function updateTransaction(
   payload: UpdateTransactionRequest,
 ): Promise<Transaction> {
   const response = await api.put<Result<Transaction>>(
-    `/Transaction/Update/${id}`,
+    `/Transactions/${id}`,
     payload,
   );
 
@@ -54,9 +51,7 @@ export async function updateTransaction(
 }
 
 export async function deleteTransaction(id: string): Promise<string> {
-  const response = await api.delete<Result<string>>(
-    `/Transaction/Delete/${id}`,
-  );
+  const response = await api.delete<Result<string>>(`/Transactions/${id}`);
 
   return handleResponse(response.data);
 }
