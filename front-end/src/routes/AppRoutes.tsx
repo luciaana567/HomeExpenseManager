@@ -21,7 +21,6 @@ export default function AppRoutes() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/transacoes" element={<TransactionsPage />} />
-            <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route
               path="/sumario-pessoas"
@@ -30,7 +29,8 @@ export default function AppRoutes() {
             <Route
               path="/sumario-categorias"
               element={<CategoriesSummaryPage />}
-            />
+            />            
+            <Route path="/perfil" element={<ProfilePage />} />
           </Route>
         </Route>
 

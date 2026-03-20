@@ -7,7 +7,7 @@ export type CreateUserRequest = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   email?: string;
   password?: string;
   username?: string;
@@ -15,7 +15,7 @@ export type User = {
 };
 
 export type UpdateUserRequest = {
-  id: number;
+  id: string;
   email?: string;
   password?: string;
   username?: string;
