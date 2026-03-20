@@ -11,7 +11,7 @@ namespace HomeExpenseManager.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
 
-    public class AuthenticatorController: ControllerBase
+    public class AuthenticatorController : ControllerBase
     {
         private readonly ILoginService _service;
         private readonly ITokenService _tokenService;
@@ -35,7 +35,10 @@ namespace HomeExpenseManager.API.Controllers
 
             return Ok(new
             {
-                token = token
+                token = token,
+                UserId = user.Id,
+                PersonId = user.Person.Id,
+                name = user.Person.Name.Split(" ").First()
             });
         }
     }
