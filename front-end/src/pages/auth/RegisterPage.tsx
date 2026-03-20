@@ -180,7 +180,7 @@ export default function RegisterPage() {
             error={errors.confirmPassword}
           />
 
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} fullWidth={true}>
             {loading ? "Cadastrando..." : "Cadastrar"}
           </Button>
         </form>

@@ -13,6 +13,7 @@ export type CreateCategoryRequest = {
 };
 
 export type UpdateCategoryRequest = {
+  id: string;
   description: string;
   purpose: Purpose;
 };

@@ -1,6 +1,6 @@
 export const Purpose = {
-  Income: 0,
   Expense: 1,
+  Income: 2,
   Both: 3,
 } as const;
 

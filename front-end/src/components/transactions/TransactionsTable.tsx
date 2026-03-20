@@ -54,7 +54,7 @@ export default function TransactionsTable({
                   <th className="px-3 py-3">Categoria</th>
                   <th className="px-3 py-3">Data</th>
                   <th className="px-3 py-3">Valor</th>
-                  <th className="px-3 py-3 text-right">Ações</th>
+                  <th className="px-15 py-3 text-right">Ações</th>
                 </tr>
               </thead>
 

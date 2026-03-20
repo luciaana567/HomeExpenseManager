@@ -23,7 +23,7 @@ import type {
   UpdateTransactionRequest,
 } from "../../types/transaction";
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 10;
 
 function getToday(): string {
   return new Date().toISOString().split("T")[0];
@@ -356,7 +356,7 @@ export default function TransactionsPage() {
 
         {!showForm && (
         <div className="self-start">
-          <Button type="button" onClick={handleOpenCreate}>
+          <Button type="button" onClick={handleOpenCreate}  fullWidth={true}>
             + Adicionar transação
           </Button>
         </div>
