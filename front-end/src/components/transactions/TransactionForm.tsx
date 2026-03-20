@@ -22,6 +22,7 @@ type TransactionFormProps = {
   categories: Category[];
   editingTransactionId: string | null;
   submitting: boolean;
+  isMinor: boolean;
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
@@ -35,6 +36,7 @@ export default function TransactionForm({
   categories,
   editingTransactionId,
   submitting,
+  isMinor,
   onChange,
   onSubmit,
   onCancel,
@@ -91,12 +93,33 @@ export default function TransactionForm({
               onChange={onChange}
               className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 outline-none focus:border-slate-500"
             >
-              {TransactionTypeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              {TransactionTypeOptions.map((option) => {
+                const disabled =
+                  isMinor && option.value === TransactionType.Income;
+
+                return (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    disabled={disabled}
+                  >
+                    {option.label}
+                  </option>
+                );
+              })}
             </select>
+
+            {formErrors.type && (
+              <span className="mt-1 block text-sm text-red-500">
+                {formErrors.type}
+              </span>
+            )}
+
+            {isMinor && (
+              <span className="mt-1 block text-sm text-amber-600">
+                Menores de 18 anos só podem cadastrar despesas.
+              </span>
+            )}
           </div>
 
           <Input

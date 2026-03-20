@@ -7,6 +7,7 @@ import TransactionForm, {
 import TransactionsTable from "../../components/transactions/TransactionsTable";
 import { useToast } from "../../hooks/useToast";
 import { getCategories } from "../../services/category.service";
+import { getPersonById } from "../../services/person.service";
 import {
   createTransaction,
   deleteTransaction,
@@ -23,7 +24,7 @@ import type {
   UpdateTransactionRequest,
 } from "../../types/transaction";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 25;
 
 function getToday(): string {
   return new Date().toISOString().split("T")[0];
@@ -43,6 +44,23 @@ function getMonthEnd(): string {
     .split("T")[0];
 }
 
+function calculateAge(birthday: string): number {
+  const today = new Date();
+  const birthDate = new Date(birthday);
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+}
+
 export default function TransactionsPage() {
   const { showToast } = useToast();
   const personId = localStorage.getItem("personId");
@@ -53,6 +71,7 @@ export default function TransactionsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
+  const [isMinor, setIsMinor] = useState(false);
 
   const [filters, setFilters] = useState<TransactionFiltersType>({
     startDate: getMonthStart(),
@@ -88,6 +107,46 @@ export default function TransactionsPage() {
     }
   }
 
+  async function loadPerson() {
+    if (!personId) {
+      showToast("Não foi possível identificar a pessoa logada.", "error");
+      return;
+    }
+
+    try {
+      const person = await getPersonById(personId);
+      const age = calculateAge(person.birthday);
+      const minor = age < 18;
+
+      setIsMinor(minor);
+
+      if (minor) {
+        setFilters((prev) => ({
+          ...prev,
+          type:
+            prev.type === TransactionType.Income
+              ? TransactionType.Expense
+              : prev.type,
+        }));
+
+        setFormData((prev) => ({
+          ...prev,
+          type:
+            prev.type === TransactionType.Income
+              ? TransactionType.Expense
+              : prev.type,
+          categoryId:
+            prev.type === TransactionType.Income ? "" : prev.categoryId,
+        }));
+      }
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : "Erro ao carregar dados da pessoa.",
+        "error",
+      );
+    }
+  }
+
   async function loadTransactions(currentFilters: TransactionFiltersType) {
     if (!personId) {
       showToast("Não foi possível identificar a pessoa logada.", "error");
@@ -117,6 +176,7 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     void loadCategories();
+    void loadPerson();
   }, []);
 
   useEffect(() => {
@@ -127,10 +187,17 @@ export default function TransactionsPage() {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
     const { name, value } = event.target;
+    const parsedValue =
+      value === "" ? undefined : name === "type" ? Number(value) : value;
+
+    if (name === "type" && isMinor && Number(value) === TransactionType.Income) {
+      showToast("Menores de 18 anos só podem consultar despesas.", "error");
+      return;
+    }
 
     setFilters((prev) => ({
       ...prev,
-      [name]: value === "" ? undefined : name === "type" ? Number(value) : value,
+      [name]: parsedValue,
       pageNumber: 1,
     }));
   }
@@ -149,6 +216,15 @@ export default function TransactionsPage() {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
     const { name, value } = event.target;
+
+    if (name === "type") {
+      const nextType = Number(value) as TransactionType;
+
+      if (isMinor && nextType === TransactionType.Income) {
+        showToast("Menores de 18 anos só podem cadastrar despesas.", "error");
+        return;
+      }
+    }
 
     setFormData((prev) => {
       const next = {
@@ -215,6 +291,10 @@ export default function TransactionsPage() {
       errors.categoryId = "Selecione a categoria.";
     }
 
+    if (isMinor && formData.type === TransactionType.Income) {
+      errors.type = "Menores de 18 anos só podem cadastrar despesas.";
+    }
+
     setFormErrors(errors);
 
     return Object.keys(errors).length === 0;
@@ -225,6 +305,11 @@ export default function TransactionsPage() {
 
     if (!personId) {
       showToast("Não foi possível identificar a pessoa logada.", "error");
+      return;
+    }
+
+    if (isMinor && formData.type === TransactionType.Income) {
+      showToast("Menores de 18 anos só podem cadastrar despesas.", "error");
       return;
     }
 
@@ -266,6 +351,14 @@ export default function TransactionsPage() {
   }
 
   function handleEdit(transaction: Transaction) {
+    if (isMinor && transaction.type === TransactionType.Income) {
+      showToast(
+        "Menores de 18 anos não podem editar transações do tipo receita.",
+        "error",
+      );
+      return;
+    }
+
     setEditingTransactionId(transaction.id);
     setFormData({
       description: transaction.description,
@@ -315,54 +408,56 @@ export default function TransactionsPage() {
   }
 
   return (
-  <div className="space-y-6 pb-6">
-    <div className="flex flex-col gap-3">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">Transações</h1>
-        <p className="mt-1 text-slate-500">
-          Consulte, cadastre, edite e exclua suas transações
-        </p>
-      </div>      
-    </div>
-
-    {showForm ? (
-      <TransactionForm
-        formData={formData}
-        formErrors={formErrors}
-        categories={categories}
-        editingTransactionId={editingTransactionId}
-        submitting={submitting}
-        onChange={handleFormChange}
-        onSubmit={handleSubmit}
-        onCancel={handleCancelForm}
-      />
-    ) : (
-      <>
-        <TransactionFilters
-          filters={filters}
-          categories={categories}
-          onChange={handleFilterChange}
-          onClear={clearFilters}
-        />
-
-        <TransactionsTable
-          transactions={transactions}
-          categories={categories}
-          loading={loading}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onPageChange={handlePageChange}
-        />
-
-        {!showForm && (
-        <div className="self-start">
-          <Button type="button" onClick={handleOpenCreate}  fullWidth={true}>
-            + Adicionar transação
-          </Button>
+    <div className="space-y-6 pb-6">
+      <div className="flex flex-col gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Transações</h1>
+          <p className="mt-1 text-slate-500">
+            Consulte, cadastre, edite e exclua transações
+          </p>
         </div>
+      </div>
+
+      {showForm ? (
+        <TransactionForm
+          formData={formData}
+          formErrors={formErrors}
+          categories={categories}
+          editingTransactionId={editingTransactionId}
+          submitting={submitting}
+          isMinor={isMinor}
+          onChange={handleFormChange}
+          onSubmit={handleSubmit}
+          onCancel={handleCancelForm}
+        />
+      ) : (
+        <>
+          <TransactionFilters
+            filters={filters}
+            categories={categories}
+            onChange={handleFilterChange}
+            onClear={clearFilters}
+          />
+
+          <TransactionsTable
+            transactions={transactions}
+            categories={categories}
+            loading={loading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onPageChange={handlePageChange}
+          />
+        </>
       )}
-      </>
-    )}
-  </div>
-);
+
+      
+        {!showForm && (
+          <div className="self-start">
+            <Button type="button" onClick={handleOpenCreate} fullWidth={true}>
+              + Adicionar transação
+            </Button>
+          </div>
+        )}
+    </div>
+  );
 }
