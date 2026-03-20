@@ -2,27 +2,26 @@ type CardProps = {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
-  align?: "left" | "center" | "right";
+  localItens?: "left" | "center" | "right";
 };
 
-export default function Card({
+export default function MediumCard({
   title,
   subtitle,
   children,
-  align = "left",
+  localItens = "center",
 }: CardProps) {
   const titleAlignment =
-    align === "center"
-      ? "text-center"
-      : align === "right"
+    localItens === "left"
+      ? "text-left"
+      : localItens === "right"
         ? "text-right"
-        : "text-left";
+        : "text-center";
 
   return (
-    <div className="w-full rounded-2xl bg-white p-6 shadow-md md:p-8">
+    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-md">
       <div className={`mb-6 ${titleAlignment}`}>
-        <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-
+        <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
         {subtitle && (
           <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
         )}

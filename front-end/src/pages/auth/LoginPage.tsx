@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../components/ui/Card";
+import MediumCard from "../../components/ui/MediumCard";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { login } from "../../services/auth.service";
@@ -91,9 +91,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
-      <Card
+      <MediumCard
         title="Entrar"
         subtitle="Acesse sua conta para gerenciar seus gastos"
+        alignment ="left"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -129,7 +130,7 @@ export default function LoginPage() {
             Criar conta
           </Link>
         </p>
-      </Card>
+      </MediumCard>
     </div>
   );
 }

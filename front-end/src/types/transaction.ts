@@ -35,4 +35,5 @@ export type TransactionFilters = {
   categoryId?: string;
   pageNumber?: number;
   pageSize?: number;
+  personId?: string;
 };

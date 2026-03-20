@@ -41,6 +41,7 @@ export default function DashboardPage() {
             endDate,
             pageNumber: 1,
             pageSize: 1000,
+            personId: personId ? personId :undefined
           }),
         ]);
 
@@ -61,19 +62,14 @@ export default function DashboardPage() {
   const myTransactions = useMemo(() => {
     if (!personId || !transactions?.items) return [];
 
-    console.log(personId)
-
-    return transactions.items.filter(
-      (transaction) => String(transaction.personId) === String(personId),
-    );
-  }, [transactions, personId]);
+    return transactions.items;
+  }, [transactions]);
 
   const totals = useMemo(() => {
     let income = 0;
     let expense = 0;
 
     myTransactions.forEach((transaction) => {
-      console.log("aqui")
       const value = Number(transaction.value ?? 0);
 
       if (transaction.type === TransactionType.Income) {
