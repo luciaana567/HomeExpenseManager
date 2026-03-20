@@ -90,14 +90,12 @@ export default function PersonsSummaryPage() {
     }));
   }
 
-  const chartData = useMemo(() => {
-    return (summary?.persons ?? []).map((person) => ({
-      name: person.name,
-      Receitas: person.totalIncome,
-      Despesas: person.totalExpense,
-      Saldo: person.balance,
-    }));
-  }, [summary]);
+ const chartData = useMemo(() => {
+  return (summary?.persons ?? []).map((person) => ({
+    name: person.name,
+    value: person.balance,
+  }));
+}, [summary]);
 
   return (
     <div className="space-y-6 pb-6">
