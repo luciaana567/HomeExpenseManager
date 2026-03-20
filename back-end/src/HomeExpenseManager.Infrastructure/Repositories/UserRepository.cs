@@ -37,6 +37,7 @@ namespace HomeExpenseManager.Infrastructure.Repositories
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users
+                .Include(x => x.Person)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
     }
