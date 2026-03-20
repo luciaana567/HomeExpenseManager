@@ -138,7 +138,7 @@ public class CategoryService : ICategoryService
         return Result<CategoriesSummaryDto>.Ok(summary);
     }
 
-    public async Task<Result<PagedResult<CategoryDto>>> GetAllAsync(CategoryQueryDto query)
+    public async Task<Result<PagedResult<CategoryDto>>> SearchAsync(CategoryQueryDto query)
     {
         query.PageNumber = query.PageNumber <= 0 ? 1 : query.PageNumber;
         query.PageSize = query.PageSize <= 0 ? 10 : query.PageSize;

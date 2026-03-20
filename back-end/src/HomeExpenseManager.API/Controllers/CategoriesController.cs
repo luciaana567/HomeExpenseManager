@@ -76,10 +76,10 @@ public class CategoriesController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] CategoryQueryDto query)
+    [HttpGet("search")]
+    public async Task<IActionResult> Searh([FromQuery] CategoryQueryDto query)
     {
-        var result = await _service.GetAllAsync(query);
+        var result = await _service.SearchAsync(query);
 
         if (!result.Success)
             return BadRequest(result);
