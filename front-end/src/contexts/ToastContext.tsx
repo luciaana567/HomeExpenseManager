@@ -1,11 +1,13 @@
 import {
   createContext,
   useCallback,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
 import Toast from "../components/feedback/Toast";
+import { registerToastHandler } from "../lib/toast";
 
 type ToastType = "error" | "success" | "warning" | "info";
 
@@ -24,15 +26,21 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const [message, setMessage] = useState("");
   const [type, setType] = useState<ToastType>("error");
 
-  const showToast = useCallback((toastMessage: string, toastType: ToastType = "error") => {
-    setMessage(toastMessage);
-    setType(toastType);
-    setIsVisible(true);
+const showToast = useCallback((toastMessage: string, toastType: ToastType = "error") => {
+  setMessage(toastMessage);
+  setType(toastType);
+  setIsVisible(true);
 
-    setTimeout(() => {
-      setIsVisible(false);
-    }, 4000);
-  }, []);
+  const timeout = window.setTimeout(() => {
+    setIsVisible(false);
+  }, 4000);
+
+  return () => window.clearTimeout(timeout);
+}, []);
+
+  useEffect(() => {
+    registerToastHandler(showToast);
+  }, [showToast]);
 
   const handleClose = useCallback(() => {
     setIsVisible(false);
